@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tavuklu POS</title>
+    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* --- CSS --- */
+        @font-face {
+        font-family: 'Takeover-Italic';
+        src: url('data:font/woff2;charset=utf-8;base64,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') format('woff2'),
+            url('data:font/woff;charset=utf-8;base64,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') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+        }
+
+
+        :root {
+            --bg-color: #f0f2f5;
+            --panel-bg: #ffffff;
+            --text-color: #333;
+            --primary-color: #ff6f00;
+            --primary-dark: #e65100;
+            --secondary-bg: #eef2f6;
+            --success-color: #2e7d32;
+            --danger-color: #d32f2f;
+            --border-radius: 10px;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0; padding: 15px;
+            background-color: var(--bg-color); color: var(--text-color);
+            height: 100vh; box-sizing: border-box; overflow: hidden;
+        }
+
+        .main-wrapper {
+            max-width: 1400px; margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            grid-template-rows: 1fr auto;
+            gap: 15px; height: 100%;
+        }
+
+        .panel {
+            background: var(--panel-bg); border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 15px;
+            display: flex; flex-direction: column; overflow: hidden; border: 1px solid #e0e0e0;
+        }
+
+        .menu-section { grid-column: 1 / 2; grid-row: 1 / 2; }
+        .cart-section { grid-column: 2 / 3; grid-row: 1 / 3; }
+        .bottom-section { grid-column: 1 / 2; grid-row: 2 / 3; height: 250px; }
+
+        /* KATEGORİLER */
+        .category-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #eee; }
+        .cat-btn {
+            flex: 1 0 auto; min-width: 80px; text-align: center; padding: 10px;
+            border-radius: 8px; background: #f5f5f5; border: 1px solid #ddd;
+            cursor: pointer; font-weight: 600; color: #555; transition: 0.2s;
+        }
+        .cat-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-dark); }
+
+        /* ÜRÜNLER */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; overflow-y: auto; padding-right: 5px; }
+        .product-card {
+            background: #fff; border: 1px solid #eee; border-radius: 8px;
+            padding: 10px; cursor: pointer; display: flex; flex-direction: column;
+            justify-content: space-between; height: 95px; transition: 0.1s;
+        }
+        .product-card:hover { border-color: var(--primary-color); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .product-name { font-weight: 600; font-size: 0.95rem; }
+        .product-price { color: var(--primary-color); font-weight: 800; font-size: 1.1rem; align-self: flex-end; }
+        .product-tag { font-size:0.75rem; color:#999; }
+
+        /* SEPET & FORM */
+        input, select, textarea {
+            width: 100%; padding: 10px; margin-bottom: 8px;
+            background: var(--secondary-bg); border: 1px solid #ddd; border-radius: 6px;
+            font-size: 0.95rem; box-sizing: border-box; outline: none;
+        }
+        .cart-list { flex-grow: 1; overflow-y: auto; background: #fcfcfc; border: 1px solid #eee; border-radius: 8px; margin: 10px 0; padding: 5px; }
+        .cart-item { padding: 8px; border-bottom: 1px solid #eee; background: #fff; margin-bottom: 4px; border-radius: 4px; }
+        .cart-item-header { display: flex; justify-content: space-between; font-weight: 600; }
+        .cart-item-details { font-size: 0.8rem; color: #666; margin-top: 2px; font-style: italic; }
+
+        /* BUTONLAR */
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; color: white; margin-top: 5px; }
+        .btn-primary { background: var(--primary-color); }
+        .btn-danger { background: var(--danger-color); }
+        .btn-success { background: var(--success-color); }
+        .btn-secondary { background: #757575; }
+        .btn-info { background: #0288d1; }
+        .btn-warning { background: #ffa000; }
+        .btn-sm { width: auto; padding: 5px 10px; font-size: 0.8rem; margin: 0; }
+        .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 5px; }
+
+        /* TABLO */
+        .orders-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .orders-table th { text-align: left; padding: 8px; background: #f5f5f5; position: sticky; top: 0; }
+        .orders-table td { padding: 8px; border-bottom: 1px solid #eee; }
+
+        /* MODALS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-box { background: white; padding: 20px; border-radius: 12px; width: 600px; max-width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        
+        .section-wrapper { margin-bottom: 15px; }
+        .section-label { font-weight: bold; margin-bottom: 5px; display: block; }
+        
+        .option-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .portion-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        
+        .opt-btn { padding: 10px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; text-align: center; }
+        .opt-btn.selected { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; font-weight: bold; }
+        .opt-btn.excluded { background: #ffebee; border-color: #c62828; color: #c62828; text-decoration: line-through; }
+        
+        .portion-btn { padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; border-radius: 6px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        .portion-btn small { font-size: 0.75rem; color:#666; margin-top:2px; }
+        .portion-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-dark); }
+        .portion-btn.active small { color: #ffe0b2; }
+
+        /* PRINT SETTINGS */
+        #receipt-area { display: none; }
+        
+        @media print {
+            @page { size: A6; margin: 0; }
+            body > .main-wrapper, body > .modal-overlay { display: none !important; }
+            html, body { height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; background: white !important; }
+            
+            #receipt-area {
+                display: block !important;
+                position: absolute; left: 0; top: 0; width: 100%;
+                padding: 5mm; box-sizing: border-box;
+                font-family: 'Courier New', monospace; font-size: 10pt; color: black;
+            }
+
+            .receipt-copy { margin-bottom: 20px; page-break-after: always; border-bottom: 1px dashed #ccc; padding-bottom: 20px; }
+            .receipt-copy:last-child { page-break-after: auto; border-bottom: none; }
+
+            .r-header { text-align: center; margin-bottom: 10px; }
+            .r-logo { 
+            font-family: 'Takeover-Italic', 'Courier New', monospace; /* Önce Takeover'ı dener */
+            font-size: 24pt; /* Font büyük dursun */
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 5px;
+            }
+            .r-sub { font-size: 9pt; }
+            .r-separator { border-bottom: 1px dashed #000; margin: 8px 0; }
+            .r-info-row { display: flex; justify-content: space-between; font-size: 9pt; }
+            .r-order-type { text-align: center; font-size: 12pt; font-weight: bold; border: 2px solid #000; padding: 5px; margin: 10px 0; background: #eee; }
+            .r-customer-box { border: 2px solid #000; padding: 10px; margin: 5px 0; font-size: 10pt; border-radius: 5px; }
+            .r-table { width: 100%; border-collapse: collapse; margin: 5px 0; }
+            .r-table th { text-align: left; border-bottom: 2px solid #000; padding: 2px 0; font-size: 9pt; }
+            .r-table td { padding: 4px 0; vertical-align: top; border-bottom: 1px dotted #ccc; }
+            .r-price { text-align: right; font-weight: bold; }
+            .r-total-section { margin-top: 10px; text-align: right; }
+            .r-total-line { font-size: 16pt; font-weight: bold; }
+            .r-footer { text-align: center; margin-top: 20px; font-size: 9pt; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <div class="panel menu-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="margin:0; color:#444;">🍔 Menü</h3>
+            <div style="display:flex; gap:5px;">
+                <button class="btn btn-secondary btn-sm" onclick="openReports()">📊 Rapor</button>
+                <button class="btn btn-secondary btn-sm" onclick="openSettings()">⚙️ Ayar</button>
+            </div>
+        </div>
+        <div id="category-filters" class="category-container"></div>
+        <div id="product-list" class="product-grid"></div>
+    </div>
+
+    <div class="panel cart-section">
+        <h3 style="margin:0 0 10px 0; border-bottom:2px solid var(--primary-color); padding-bottom:5px;">📝 Sipariş</h3>
+        <input type="tel" id="cust-phone" placeholder="Telefon (555...)" onkeyup="searchCustomer(this.value)" autocomplete="off">
+        <div id="cust-details" style="display:none; background:#fff8e1; padding:8px; border-radius:6px; margin-bottom:8px; border:1px solid #ffe0b2; font-size:0.9rem;">
+            <input type="text" id="cust-name" placeholder="Ad Soyad">
+            <textarea id="cust-address" rows="2" placeholder="Adres"></textarea>
+            <input type="text" id="cust-note" placeholder="Kalıcı Not">
+            <div id="cust-stats" style="color:#e65100; font-weight:bold; margin-top:2px;"></div>
+        </div>
+        
+        <div class="cart-list" id="cart-list"><div style="text-align: center; padding: 30px; color: #aaa;">Sepet Boş</div></div>
+        
+        <div style="display:flex; gap:10px; margin-bottom:5px;">
+            <input type="number" id="order-discount" placeholder="İndirim (TL)" onchange="renderCart()" style="margin:0;">
+            <input type="number" id="order-extra" placeholder="Ekstra (TL)" onchange="renderCart()" style="margin:0;">
+        </div>
+
+        <div style="margin-top:auto;">
+            <div style="display:flex; gap:5px;">
+                <select id="order-type"><option value="Paket">🛵 Paket</option><option value="Gel-Al">🥡 Gel-Al</option><option value="Masa">🍽️ Masa</option></select>
+                <select id="payment-type"><option value="Nakit">💵 Nakit</option><option value="Kredi Kartı">💳 K.Kartı</option></select>
+            </div>
+            <input type="text" id="order-note" placeholder="Genel Sipariş Notu">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0;">
+                <span style="font-size:1.1rem; color:#666;">Toplam:</span>
+                <span id="cart-total" style="font-size: 1.8rem; color: var(--primary-color); font-weight:800;">0.00 ₺</span>
+            </div>
+            <button class="btn btn-primary" onclick="completeOrder()">YAZDIR & KAYDET</button>
+        </div>
+    </div>
+
+    <div class="panel bottom-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+            <h4 style="margin:0;">🚀 Son İşlemler</h4>
+            <button class="btn btn-danger btn-sm" onclick="closeDay()">Z Raporu (Detaylı)</button>
+        </div>
+        <div style="overflow-y:auto;">
+            <table class="orders-table">
+                <thead><tr><th>Saat</th><th>Müşteri</th><th>Tutar</th><th>Durum</th><th>İşlem</th></tr></thead>
+                <tbody id="active-orders-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modal-options" class="modal-overlay">
+    <div class="modal-box">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+            <span style="font-size:1.2rem; font-weight:bold;" id="opt-product-name">Ürün Adı</span>
+            <button class="icon-btn" onclick="closeModal('modal-options')">✕</button>
+        </div>
+        
+        <div id="wrapper-portions" class="section-wrapper">
+            <span class="section-label">Porsiyon (Gramaj):</span>
+            <div class="portion-grid" id="portion-container"></div>
+            <input type="number" id="manual-price" placeholder="Özel Fiyat Gir (Örn: 250)" style="margin-top:10px; border-color:var(--primary-color);" onkeyup="updateOptionPrice()">
+        </div>
+
+        <div id="wrapper-options" class="section-wrapper">
+            <span class="section-label">Seçenekler:</span>
+            <div class="option-grid">
+                <div class="opt-btn" onclick="toggleOption(this, 'Patates Olmasın')">🍟 Patates Olmasın</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Makarna Olmasın')">🍝 Makarna Olmasın</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Salata Olmasın')">🥗 Salata Olmasın</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Makarna Bol')">🍝 Makarna Bol</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Soğansız')">🧅 Soğansız</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Turşusuz')">🥒 Turşusuz</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Domatessiz')">🍅 Domatessiz</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Mayonezsiz')">⚪ Mayonezsiz</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Marulsuz')">🥬 Marulsuz</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Bibersiz')">🌶 Bibersiz</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Havuçsuz')">🥕 Havuçsuz</div>
+                <div class="opt-btn" onclick="toggleOption(this, 'Mısırsız')">🌽 Mısırsız</div>
+            </div>
+        </div>
+
+        <div class="section-wrapper" style="background:#f9f9f9; padding:10px; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:20px;">
+            <span style="font-weight:bold;">Adet:</span>
+            <button class="btn btn-secondary" style="width:40px; margin:0; font-weight:bold;" onclick="updateModalQty(-1)">-</button>
+            <span id="modal-qty" style="font-size:1.5rem; font-weight:bold; width:30px; text-align:center;">1</span>
+            <button class="btn btn-secondary" style="width:40px; margin:0; font-weight:bold;" onclick="updateModalQty(1)">+</button>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+            <div style="font-size:1.5rem; font-weight:bold; color:var(--primary-color);">
+                <span id="opt-price">0.00</span> ₺
+            </div>
+            <button class="btn btn-primary" style="width:150px;" onclick="confirmAddToCart()">Ekle</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-settings" class="modal-overlay">
+    <div class="modal-box" style="width: 750px;">
+        <h3>⚙️ Yönetim Paneli</h3>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
+            <button class="btn btn-info" style="padding:15px; font-size:1rem;" onclick="openCustomerList()">
+                👥 Müşteri Listesi
+            </button>
+
+            <div style="background:#e3f2fd; padding:10px; border-radius:8px; display:flex; gap:5px; align-items:center;">
+                <button class="btn btn-warning" onclick="backupData()">💾 Yedek Al (İndir)</button>
+                <input type="file" id="restoreInput" style="display:none" onchange="restoreData(this)">
+                <button class="btn btn-warning" onclick="document.getElementById('restoreInput').click()">📂 Geri Yükle</button>
+            </div>
+        </div>
+
+        <h4 style="border-bottom:1px solid #ddd; padding-bottom:5px;">Ürün Ekle / Düzenle</h4>
+        <div style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;">
+            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; margin-bottom:10px;">
+                <input type="text" id="new-prod-name" placeholder="Ürün Adı" style="margin:0;">
+                <select id="new-prod-cat" onchange="togglePriceInputs()" style="margin:0;">
+                    <option value="Tabak">Tabak</option>
+                    <option value="Tombik Ekmek">Tombik Ekmek</option>
+                    <option value="Yarım Ekmek">Yarım Ekmek</option>
+                    <option value="Tam Ekmek">Tam Ekmek</option>
+                    <option value="Burger">Burger</option>
+                    <option value="İçecek">İçecek</option>
+                    <option value="Yan ürünler">Yan ürünler</option>
+                </select>
+                <input type="number" id="new-prod-price" placeholder="100gr / Tek Fiyat" style="margin:0;">
+            </div>
+            <div id="extra-prices" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:10px; background:#fff3e0; padding:10px; border-radius:6px;">
+                <input type="number" id="new-price-200" placeholder="200gr Fiyatı">
+                <input type="number" id="new-price-300" placeholder="300gr Fiyatı">
+                <input type="number" id="new-price-400" placeholder="400gr Fiyatı">
+            </div>
+            <button class="btn btn-success" onclick="addNewProduct()">+ Yeni Ürün Ekle</button>
+        </div>
+        
+        <div style="max-height:200px; overflow-y:auto;">
+            <table class="orders-table" id="mgmt-table">
+                <thead><tr><th>Ürün</th><th>Kat.</th><th>Fiyat</th><th>Sil</th></tr></thead>
+                <tbody id="mgmt-product-list"></tbody>
+            </table>
+        </div>
+
+        <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:10px;">
+            <button class="btn btn-danger btn-sm" onclick="factoryReset()">⚠️ SİSTEMİ SIFIRLA</button>
+        </div>
+        <button class="btn btn-secondary" onclick="closeModal('modal-settings')" style="margin-top:10px;">Kapat</button>
+    </div>
+</div>
+
+<div id="modal-customers" class="modal-overlay">
+    <div class="modal-box" style="width: 900px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3>👥 Kayıtlı Müşteriler</h3>
+            <button class="icon-btn" onclick="closeModal('modal-customers')">✕</button>
+        </div>
+        <div style="max-height:600px; overflow-y:auto;">
+            <table class="orders-table" style="font-size:10pt;">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>Telefon</th>
+                        <th>Adres</th>
+                        <th>Not</th>
+                        <th>Sipariş Sayısı</th>
+                    </tr>
+                </thead>
+                <tbody id="customer-list-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modal-reports" class="modal-overlay">
+    <div class="modal-box" style="width: 800px;">
+        <h3>📊 Raporlar</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+            <div><h4>Kategori Dağılımı</h4><canvas id="chart-categories"></canvas></div>
+            <div><h4>Son 7 Gün</h4><canvas id="chart-weekly"></canvas></div>
+        </div>
+        <button class="btn btn-secondary" onclick="closeModal('modal-reports')" style="margin-top:10px;">Kapat</button>
+    </div>
+</div>
+
+<div id="receipt-area"></div>
+
+<script>
+    const db = new Dexie("SimplePOS_v8_Backup");
+    db.version(1).stores({
+        customers: 'phone, name, totalOrders',
+        products: '++id, name, price, price200, price300, price400, category',
+        orders: '++id, customerPhone, timestamp, status, total, paymentMethod',
+        dailyReports: 'date, totalRevenue'
+    });
+
+    let cart = [];
+    let allProducts = [];
+    let currentCustomer = null;
+    let activeCategory = 'HEPSİ';
+    
+    let selectedProduct = null;
+    let selectedPortion = 100;
+    let selectedOptions = [];
+    let selectedQty = 1;
+
+    // Seed Data
+    db.on("populate", () => {
+        db.products.bulkAdd([
+            { name: "Tavuklu Tabak Dağ Kekikli ve Kremalı", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Teriyaki", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Barbekü", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Soya", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Köri", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Acılı", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Klasik", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Tatlı Ekşi", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Mexican", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Ballı Hardal", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Tabak Sweet Chili", price: 220, price200: 220, price300: 300, price400: 400, category: "Tabak" },
+            { name: "Tavuklu Dağ Kekikli ve Kremalı(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Teriyaki(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Barbekü(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Soya(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Köri(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Klasik(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Acılı(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Tatlı Ekşi(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Mexican(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Ballı Hardal(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Sweet Chili(Tam)", price: 200, category: "Tam Ekmek" },
+            { name: "Tavuklu Dağ Kekikli ve Kremalı(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Teriyaki(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Barbekü(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Soya(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Köri(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Klasik(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Acılı(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Tatlı Ekşi(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Mexican(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Ballı Hardal(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Sweet Chili(Yarım)", price: 120, category: "Yarım Ekmek" },
+            { name: "Tavuklu Dağ Kekikli ve Kremalı(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Teriyaki(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Barbekü(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Soya(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Köri(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Klasik(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Acılı(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Tatlı Ekşi(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Mexican(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Ballı Hardal(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Sweet Chili(Tombik)", price: 120, category: "Tombik Ekmek" },
+            { name: "Tavuklu Burger", price: 200, category: "Burger" },
+            { name: "Tavuklu Cheddar Burger", price: 220, category: "Burger" },
+            { name: "Tavuklu Trüflü Mayonezli Burger", price: 220, category: "Burger" },
+            { name: "Kutu Kola", price: 60, category: "İçecek" },
+            { name: "Şişe Kola", price: 40, category: "İçecek" },
+            { name: "Kutu Fanta", price: 60, category: "İçecek" },
+            { name: "Şişe Fanta", price: 40, category: "İçecek" },
+            { name: "Kutu Sprite", price: 60, category: "İçecek" },
+            { name: "Kutu Fuse Tea", price: 60, category: "İçecek" },
+            { name: "Küçük Eker Ayran 170ml", price: 20, category: "İçecek" },
+            { name: "Tombul Eker Ayran 293ml", price: 45, category: "İçecek" },
+            { name: "Maden Suyu", price: 15, category: "İçecek" },
+            { name: "Su", price: 20, category: "İçecek" },
+            { name: "Çıtır Tavuklu Tabağı", price: 150, category: "Yan" },
+            { name: "Patates Kızartması", price: 75, category: "Yan" }
+        ]);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadProducts();
+        loadActiveOrders();
+        togglePriceInputs();
+    });
+
+    async function loadProducts() {
+        allProducts = await db.products.toArray();
+        renderCategories();
+        renderProducts(activeCategory);
+    }
+
+    function renderCategories() {
+        const categories = ['HEPSİ', ...new Set(allProducts.map(p => p.category))];
+        document.getElementById("category-filters").innerHTML = categories.map(cat => `
+            <div class="cat-btn ${cat === activeCategory ? 'active' : ''}" onclick="filterCat('${cat}')">${cat}</div>
+        `).join('');
+    }
+
+    function filterCat(cat) { activeCategory = cat; renderCategories(); renderProducts(cat); }
+
+    function renderProducts(cat) {
+        const list = cat === 'HEPSİ' ? allProducts : allProducts.filter(p => p.category === cat);
+        document.getElementById("product-list").innerHTML = list.map(p => `
+            <div class="product-card" onclick="openOptionModal(${p.id})">
+                <div><span class="product-name">${p.name}</span><br><span class="product-tag">${p.category}</span></div>
+                <span class="product-price">${p.price} ₺</span>
+            </div>
+        `).join('');
+    }
+
+    function openOptionModal(id) {
+        selectedProduct = allProducts.find(p => p.id === id);
+        selectedPortion = 200;
+        selectedOptions = [];
+        selectedQty = 1; 
+        document.getElementById("manual-price").value = "";
+
+        const cat = selectedProduct.category;
+        
+        document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected', 'excluded'));
+        document.getElementById("opt-product-name").innerText = selectedProduct.name;
+        document.getElementById("modal-qty").innerText = "1";
+
+        const portionWrapper = document.getElementById("wrapper-portions");
+        const optionsWrapper = document.getElementById("wrapper-options");
+        
+        if(cat === 'Tabak') {
+            portionWrapper.style.display = 'block';
+            const p100 = selectedProduct.price;
+            const p200 = selectedProduct.price200 || (p100*2);
+            const p300 = selectedProduct.price300 || (p100*3);
+            const p400 = selectedProduct.price400 || (p100*4);
+            document.getElementById("portion-container").innerHTML = `
+                <div class="portion-btn" onclick="selectPortion(this, 200)">200gr <small>${p200}₺</small></div>
+                <div class="portion-btn" onclick="selectPortion(this, 300)">300gr <small>${p300}₺</small></div>
+                <div class="portion-btn" onclick="selectPortion(this, 400)">400gr <small>${p400}₺</small></div>
+            `;
+        } else {
+            portionWrapper.style.display = 'none';
+        }
+
+        if(cat === 'İçecek' || cat === 'Yan ürünler') optionsWrapper.style.display = 'none';
+        else optionsWrapper.style.display = 'block';
+
+        updateOptionPrice();
+        document.getElementById("modal-options").style.display = "flex";
+    }
+
+    function updateModalQty(change) {
+        selectedQty += change;
+        if(selectedQty < 1) selectedQty = 1;
+        document.getElementById("modal-qty").innerText = selectedQty;
+        updateOptionPrice();
+    }
+
+    function selectPortion(btn, gram) {
+        selectedPortion = gram;
+        document.querySelectorAll('.portion-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById("manual-price").value = ""; 
+        updateOptionPrice();
+    }
+
+    function toggleOption(btn, optName) {
+        if(selectedOptions.includes(optName)) {
+            selectedOptions = selectedOptions.filter(o => o !== optName);
+            btn.classList.remove('selected', 'excluded');
+        } else {
+            selectedOptions.push(optName);
+            if(optName.includes('Bol')) btn.classList.add('selected'); else btn.classList.add('excluded');
+        }
+    }
+
+    function updateOptionPrice() {
+        const manualPrice = parseFloat(document.getElementById("manual-price").value);
+        let unitPrice = selectedProduct.price;
+
+        if (manualPrice > 0) {
+            unitPrice = manualPrice;
+        } else if(selectedProduct.category === 'Tabak') {
+            if(selectedPortion === 200) unitPrice = selectedProduct.price200 || (selectedProduct.price * 2);
+            else if(selectedPortion === 300) unitPrice = selectedProduct.price300 || (selectedProduct.price * 3);
+            else if(selectedPortion === 400) unitPrice = selectedProduct.price400 || (selectedProduct.price * 4);
+        }
+        
+        const total = unitPrice * selectedQty;
+        document.getElementById("opt-price").innerText = total.toFixed(2);
+    }
+
+    function confirmAddToCart() {
+        const priceText = document.getElementById("opt-price").innerText;
+        const finalPrice = parseFloat(priceText); 
+        const manualInput = parseFloat(document.getElementById("manual-price").value);
+
+        cart.push({
+            id: Date.now(),
+            productId: selectedProduct.id,
+            name: selectedProduct.name,
+            portion: (selectedProduct.category === 'Tabak' && !manualInput) ? selectedPortion : null,
+            options: [...selectedOptions],
+            price: finalPrice,
+            qty: selectedQty, 
+            category: selectedProduct.category,
+            isManual: !!manualInput 
+        });
+        
+        renderCart();
+        closeModal('modal-options');
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function renderCart() {
+        const container = document.getElementById("cart-list");
+        const discount = parseFloat(document.getElementById("order-discount").value) || 0;
+        const extra = parseFloat(document.getElementById("order-extra").value) || 0;
+
+        let subTotal = 0;
+        
+        if (cart.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 30px; color: #aaa;">Sepet Boş</div>';
+            document.getElementById("cart-total").innerText = "0.00 ₺";
+            return;
+        }
+
+        let html = cart.map((item, index) => {
+            subTotal += item.price;
+            let portionText = "";
+            if(item.isManual) portionText = "(Özel Fiyat)";
+            else if(item.portion) portionText = `(${item.portion}gr)`;
+
+            const qtyLabel = item.qty > 1 ? `<b style="color:var(--primary-color)">${item.qty}x</b> ` : '';
+            return `
+                <div class="cart-item">
+                    <div class="cart-item-header">
+                        <span>${qtyLabel}${item.name} ${portionText}</span>
+                        <span>${item.price.toFixed(2)} ₺</span>
+                    </div>
+                    ${item.options.length > 0 ? `<div class="cart-item-details">${item.options.join(', ')}</div>` : ''}
+                    <div style="text-align:right; margin-top:5px;"><button class="btn btn-danger btn-sm" onclick="removeFromCart(${index})">Sil</button></div>
+                </div>
+            `;
+        }).join('');
+
+        const finalTotal = subTotal + extra - discount;
+        document.getElementById("cart-list").innerHTML = html;
+        document.getElementById("cart-total").innerText = finalTotal.toFixed(2) + " ₺";
+    }
+
+    function removeFromCart(index) { cart.splice(index, 1); renderCart(); }
+
+    let searchTimeout;
+    function searchCustomer(phone) {
+        clearTimeout(searchTimeout);
+        const div = document.getElementById("cust-details");
+        if(phone.length < 3) { div.style.display="none"; currentCustomer=null; return; }
+        searchTimeout = setTimeout(async () => {
+            currentCustomer = await db.customers.get(phone);
+            div.style.display = "block";
+            if(currentCustomer) {
+                document.getElementById("cust-name").value = currentCustomer.name;
+                document.getElementById("cust-address").value = currentCustomer.lastAddress || "";
+                document.getElementById("cust-note").value = currentCustomer.note || "";
+                document.getElementById("cust-stats").innerText = `Kayıtlı: ${currentCustomer.totalOrders} Sipariş`;
+            } else {
+                document.getElementById("cust-name").value = "";
+                document.getElementById("cust-address").value = "";
+                document.getElementById("cust-note").value = "";
+                document.getElementById("cust-stats").innerText = "Yeni Müşteri";
+            }
+        }, 300);
+    }
+
+    async function completeOrder() {
+        if(cart.length === 0) return alert("Sepet boş!");
+        const phone = document.getElementById("cust-phone").value;
+        const name = document.getElementById("cust-name").value;
+        const address = document.getElementById("cust-address").value;
+        const note = document.getElementById("order-note").value;
+        const custNote = document.getElementById("cust-note").value;
+        const type = document.getElementById("order-type").value;
+        const pay = document.getElementById("payment-type").value;
+        
+        const discount = parseFloat(document.getElementById("order-discount").value) || 0;
+        const extra = parseFloat(document.getElementById("order-extra").value) || 0;
+        const total = parseFloat(document.getElementById("cart-total").innerText.replace(' ₺',''));
+
+        if(type === 'Paket' && !phone) return alert("Paket için telefon şart!");
+
+        if(phone) {
+            await db.customers.put({ phone, name: name||'Misafir', lastAddress: address, note: custNote, totalOrders: (currentCustomer?.totalOrders || 0) + 1 });
+        }
+
+        const orderId = await db.orders.add({
+            customerPhone: phone, customerName: name, items: cart, 
+            total, discount, extra, 
+            paymentMethod: pay, orderType: type,
+            status: 'active', timestamp: new Date(), orderNote: note
+        });
+
+        printReceipt(orderId, {name, phone, address, note, custNote}, cart, total, discount, extra, type, pay, false);
+        
+        cart = []; 
+        document.getElementById("order-discount").value = "";
+        document.getElementById("order-extra").value = "";
+        renderCart();
+        
+        document.getElementById("order-note").value = "";
+        document.getElementById("cust-phone").value = ""; 
+        document.getElementById("cust-details").style.display = "none";
+        loadActiveOrders();
+    }
+
+    function openSettings() { renderMgmtTable(); togglePriceInputs(); document.getElementById("modal-settings").style.display = "flex"; }
+    function togglePriceInputs() {
+        const cat = document.getElementById("new-prod-cat").value;
+        document.getElementById("extra-prices").style.display = (cat === 'Tabak') ? 'grid' : 'none';
+    }
+    function renderMgmtTable() {
+        document.getElementById("mgmt-product-list").innerHTML = allProducts.map(p => `
+            <tr>
+                <td>${p.name}</td><td>${p.category}</td><td>${p.price}₺</td>
+                <td><button class="btn btn-danger btn-sm" onclick="deleteProd(${p.id})">Sil</button></td>
+            </tr>
+        `).join('');
+    }
+    async function addNewProduct() {
+        const name = document.getElementById("new-prod-name").value;
+        const cat = document.getElementById("new-prod-cat").value;
+        const price = parseFloat(document.getElementById("new-prod-price").value);
+        let p200=null, p300=null, p400=null;
+        if(cat === 'Tabak') {
+            p200 = parseFloat(document.getElementById("new-price-200").value);
+            p300 = parseFloat(document.getElementById("new-price-300").value);
+            p400 = parseFloat(document.getElementById("new-price-400").value);
+        }
+        if(!name || !price) return;
+        await db.products.add({ name, category: cat, price, price200: p200, price300: p300, price400: p400 });
+        loadProducts(); renderMgmtTable(); document.getElementById("new-prod-name").value = "";
+    }
+    async function deleteProd(id) { if(confirm("Sil?")) { await db.products.delete(id); loadProducts(); renderMgmtTable(); } }
+    async function factoryReset() { if(confirm("Her şey silinecek?")) { await db.delete(); window.location.reload(); } }
+
+    // --- YENİ: YEDEK ALMA VE YÜKLEME ---
+    async function backupData() {
+        const data = {
+            p: await db.products.toArray(),
+            c: await db.customers.toArray(),
+            o: await db.orders.toArray(),
+            r: await db.dailyReports.toArray()
+        };
+        const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `tavuklu_yedek_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+    }
+
+    async function restoreData(input) {
+        const file = input.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            if(!confirm("Mevcut veriler silinip yedek yüklenecek. Emin misiniz?")) return;
+            const data = JSON.parse(e.target.result);
+            await db.transaction('rw', db.products, db.customers, db.orders, db.dailyReports, async () => {
+                await db.products.clear(); await db.products.bulkAdd(data.p);
+                await db.customers.clear(); await db.customers.bulkAdd(data.c);
+                await db.orders.clear(); await db.orders.bulkAdd(data.o);
+                await db.dailyReports.clear(); await db.dailyReports.bulkAdd(data.r || []); // Eski yedeklerde rapor olmayabilir
+            });
+            alert("Yedek başarıyla yüklendi!");
+            window.location.reload();
+        };
+        reader.readAsText(file);
+    }
+
+    // --- YENİ: MÜŞTERİ LİSTESİ ---
+    async function openCustomerList() {
+        const customers = await db.customers.toArray();
+        const tbody = document.getElementById("customer-list-body");
+        tbody.innerHTML = customers.map(c => `
+            <tr>
+                <td>${c.name}</td>
+                <td>${c.phone}</td>
+                <td>${c.lastAddress || '-'}</td>
+                <td>${c.note || '-'}</td>
+                <td style="text-align:center;">${c.totalOrders}</td>
+            </tr>
+        `).join('');
+        document.getElementById("modal-customers").style.display = "flex";
+    }
+
+    function printReceipt(id, cust, items, total, discount, extra, type, pay, doubleCopy = false) {
+        const d = new Date().toLocaleString('tr-TR');
+        const createReceiptHTML = () => `
+            <div class="r-header"><div class="r-logo">TAVUKLU.tr</div><div class="r-sub">Vıraca Mah. Benli Ahmet Sk. No:3/A Mustafakemalpaşa/BURSA <br> (Güvenal ve Makbul Arası)</div><div class="r-sub">Tel: +90 531 370 95 74</div></div>
+            <div class="r-separator"></div>
+            <div class="r-info-row"><span>Fiş: #${id}</span><span>${d}</span></div>
+            <div class="r-order-type">${type.toUpperCase()}</div>
+            <div class="r-customer-box">
+                <div><strong>${cust.name || 'Misafir'}</strong></div>
+                ${cust.phone ? `<div>Tel: ${cust.phone}</div>` : ''}
+                ${cust.address ? `<div style="margin-top:2px;">Adres: ${cust.address}</div>` : ''}
+                ${cust.note ? `<div class="r-separator"></div><div><strong>Not:</strong> ${cust.note}</div>` : ''}
+            </div>
+            <div class="r-separator"></div>
+            <table class="r-table">
+                <thead><tr><th>ADET</th><th>ÜRÜN</th><th>TUTAR</th></tr></thead>
+                <tbody>
+                    ${items.map(i => `
+                        <tr>
+                            <td class="r-qty">${i.qty}</td>
+                            <td>
+                                <div>${i.name}</div>
+                                <div style="font-size:8pt; margin-left:5px;">
+                                    ${i.isManual ? 'Özel Fiyat' : (i.portion ? i.portion + 'gr' : '')} 
+                                    ${i.options.join(', ')}
+                                </div>
+                            </td>
+                            <td class="r-price">${i.price.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            ${(discount > 0 || extra > 0) ? `
+            <div class="r-separator"></div>
+            <div style="font-size:9pt;">
+                ${extra > 0 ? `<div class="r-info-row"><span>Ekstra:</span><span>+${extra.toFixed(2)}</span></div>` : ''}
+                ${discount > 0 ? `<div class="r-info-row"><span>İndirim:</span><span>-${discount.toFixed(2)}</span></div>` : ''}
+            </div>` : ''}
+            <div class="r-separator"></div>
+            <div class="r-total-section">
+                <div class="r-total-line">TOPLAM: ${total.toFixed(2)} ₺</div>
+                <div class="r-payment">Ödeme: ${pay}</div>
+            </div>
+            <div class="r-footer"><div style="font-weight:bold; font-size:11pt;">*** AFİYET OLSUN ***</div></div>
+        `;
+        let fullHTML = `<div class="receipt-copy">${createReceiptHTML()}</div>`;
+        if(doubleCopy) fullHTML += `<div class="receipt-copy">${createReceiptHTML()}</div>`;
+        document.getElementById("receipt-area").innerHTML = fullHTML;
+        window.print();
+    }
+
+    async function printOldOrder(id) {
+        const o = await db.orders.get(id);
+        let address = '';
+        if (o.customerPhone) {
+            const c = await db.customers.get(o.customerPhone);
+            if (c) address = c.lastAddress || '';
+        }
+        const cust = { name: o.customerName, phone: o.customerPhone, address: address, note: o.orderNote }; 
+        printReceipt(o.id, cust, o.items, o.total, o.discount||0, o.extra||0, o.orderType, o.paymentMethod, false);
+    }
+
+    async function loadActiveOrders() {
+        const today=new Date(); today.setHours(0,0,0,0);
+        const orders=await db.orders.where('timestamp').above(today).reverse().toArray();
+        document.getElementById("active-orders-body").innerHTML = orders.map(o => `
+            <tr style="${o.status==='cancelled'?'opacity:0.5':''}">
+                <td>${new Date(o.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td>
+                <td>${o.customerName||'-'}</td>
+                <td>${o.total} ₺</td>
+                <td>${o.status==='active'?'✅':'❌'}</td>
+                <td>
+                    ${o.status==='active'?`<button class="btn-danger btn-sm" onclick="cancelOrder(${o.id})">İptal</button>`:''}
+                    <button class="btn-secondary btn-sm" onclick="printOldOrder(${o.id})">🖨️</button>
+                </td>
+            </tr>`).join('');
+    }
+    
+    async function cancelOrder(id) { if(confirm("İptal?")) { await db.orders.update(id,{status:'cancelled'}); loadActiveOrders(); }}
+    
+    async function closeDay() {
+        if(!confirm("GÜN SONU DETAYLI RAPORU ALINIYOR!")) return;
+        const today = new Date(); today.setHours(0,0,0,0);
+        const allOrders = await db.orders.where('timestamp').above(today).toArray();
+        const orders = allOrders.filter(o => o.status === 'active');
+
+        let total = 0, cash = 0, credit = 0;
+        let tableRows = "";
+
+        orders.forEach(o => {
+            total += o.total;
+            if(o.paymentMethod === 'Nakit') cash += o.total; else credit += o.total;
+            const time = new Date(o.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            tableRows += `<tr><td>${time}</td><td>${o.orderType}</td><td style="text-align:right;">${o.total.toFixed(2)}</td><td style="text-align:center;">${o.paymentMethod === 'Nakit' ? 'N' : 'K'}</td></tr>`;
+        });
+
+        const html = `
+            <div class="r-header"><div class="r-logo">GÜN SONU</div><div>${new Date().toLocaleDateString('tr-TR')}</div></div>
+            <div class="r-separator"></div>
+            <table class="r-table" style="width:100%; font-size:9pt;">
+                <thead><tr><th style="text-align:left;">Saat</th><th style="text-align:left;">Tip</th><th style="text-align:right;">Tutar</th><th style="text-align:center;">Öd.</th></tr></thead>
+                <tbody>${tableRows}</tbody>
+            </table>
+            <div class="r-separator"></div>
+            <div style="font-size:10pt;">
+                <div class="r-info-row"><span>Toplam Adet:</span><span>${orders.length}</span></div>
+                <div class="r-info-row"><span>Nakit:</span><span>${cash.toFixed(2)} TL</span></div>
+                <div class="r-info-row"><span>Kredi Kartı:</span><span>${credit.toFixed(2)} TL</span></div>
+                <div class="r-double-separator"></div>
+                <div class="r-total-line" style="text-align:right;">TOPLAM: ${total.toFixed(2)} TL</div>
+            </div>
+            <div class="r-footer">İmza: _______________</div>
+        `;
+        document.getElementById("receipt-area").innerHTML = html;
+        window.print();
+        await db.dailyReports.put({date: new Date().toISOString().split('T')[0], totalRevenue: total});
+    }
+    
+    async function openReports() {
+        const today = new Date(); today.setDate(today.getDate() - 7);
+        const orders = await db.orders.where('timestamp').above(today).toArray();
+        const catSales = {}; const daySales = {};
+        orders.forEach(o => {
+            if(o.status==='cancelled') return;
+            daySales[new Date(o.timestamp).toLocaleDateString('tr-TR')] = (daySales[new Date(o.timestamp).toLocaleDateString('tr-TR')] || 0) + o.total;
+            o.items.forEach(i => {
+                const prod = allProducts.find(p => p.id === i.productId);
+                const cat = prod ? prod.category : 'Diğer';
+                catSales[cat] = (catSales[cat] || 0) + i.price;
+            });
+        });
+        document.getElementById("modal-reports").style.display="flex";
+        if(window.charts) window.charts.forEach(c=>c.destroy());
+        window.charts = [
+            new Chart(document.getElementById("chart-categories"), {type:'pie', data:{labels:Object.keys(catSales), datasets:[{data:Object.values(catSales), backgroundColor:['#ff6f00','#2e7d32','#1565c0','#c62828','#fdd835']}]}}),
+            new Chart(document.getElementById("chart-weekly"), {type:'bar', data:{labels:Object.keys(daySales), datasets:[{label:'Ciro', data:Object.values(daySales), backgroundColor:'#ff6f00'}]}})
+        ];
+    }
+    
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+</body>
+</html>
